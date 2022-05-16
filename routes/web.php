@@ -3,6 +3,7 @@ use RealRashid\SweetAlert\Facades\Aler;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\QrCodeGeneratorController;
 
@@ -71,7 +72,7 @@ Route::get('/admin/logout', 'AdminController@getAdminLogout')->name('admin.logou
 
 Route::get('/event/ranking', 'EventEventController@getRankingEvent');
 
-Route::get('/event/category/{id}', 'EventEventController@getEventCategoty')->name('client.category');
+Route::get('/event/category/{id}', 'EventEventController@getEventCategory')->name('client.category');
 
 Route::get('/event/delete/{id}', 'EventEventController@deleteEventUser')->name('client.event.delete');
 Route::get('/ticket/delete/{id}', 'EventEventController@DeleteTicket')->name('client.ticket.delete');

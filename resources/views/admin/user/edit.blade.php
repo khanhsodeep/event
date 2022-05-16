@@ -86,10 +86,10 @@ Sửa thông tin tài khoản người dùng
             @method('PUT')
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="row">
-                <div class="form-group col-6">
+                <!-- <div class="form-group col-6">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" class="form-control" value="{!!$user->username!!}">
-                </div>
+                </div> -->
                 <div class="form-group col-6">
                     <label for="fullname">Họ tên</label>
                     <input type="text" id="fullname" name="fullname" class="form-control" value="{!!$user->fullname!!}">
@@ -100,16 +100,16 @@ Sửa thông tin tài khoản người dùng
                     <label for="email">Email</label>
                     <input type="text" id="email" name="email" class="form-control" value="{!!$user->email!!}">
                 </div>
-                <div class="form-group col-6">
+                <!-- <div class="form-group col-6">
                     <label for="address">Địa chỉ</label>
                     <input type="text" id="address" name="address" class="form-control" value="{!!$user->address!!}">
-                </div>
+                </div> -->
             </div>
             <div class="row">
-                <div class="form-group col-6">
+                <!-- <div class="form-group col-6">
                     <label for="phone">SĐT</label>
                     <input type="text" id="phone" name="phone" class="form-control" value="{!!$user->phone!!}">
-                </div>
+                </div> -->
                 <div class="form-group col-6">
                     <label for="role_id">Quyền</label>
                     <select id="role_id" class="form-control custom-select" name="role_id">

@@ -59,7 +59,7 @@
                         <a class="nav-link scrollto" href="{{ URL::route('home') }}#gallery">Khoảnh khắc</a>
                     </li>
                     <li>
-                        <a class="nav-link scrollto" href="#faq">Câu hỏi thường gặp</a>
+                        <a class="nav-link scrollto" href="{{ URL::route('home') }}#faq">Câu hỏi thường gặp</a>
                     </li>
                     <li class="dropdown">
                         <a href="#"><span>Hội nghị - Sự kiện</span>

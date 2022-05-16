@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rule;
 use App\User;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 
@@ -36,9 +36,9 @@ class UserController extends Controller
     public function postAdd(Request $request)
     {
         $validateRules = [
-            'fullname' => 'required|min:6|regex:/^([a-zA-Z]+)(\s[a-zA-Z]+)*$/',
+            'fullname' => ['required', 'string', 'max:255'],
             'email' => 'required|email|unique:users,email',
-            'password' => 'required',
+            'password' => 'required|min:6',
             'role_id' => 'required',
 
         ];
@@ -47,11 +47,11 @@ class UserController extends Controller
             return redirect()->route("admin.user.add")->withErrors($validator)->withInput();
         }
         $data = [
-            'username' => $request->input('username'),
+            // 'username' => $request->input('username'),
             'fullname' => $request->input('fullname'),
             'email' => $request->input('email'),
-            'address' => $request->input('address'),
-            'phone' => $request->input('phone'),
+            // 'address' => $request->input('address'),
+            // 'phone' => $request->input('phone'),
             'password' => Hash::make($request->password),
             'role_id' => $request->input('role_id'),
         ];
@@ -70,7 +70,7 @@ class UserController extends Controller
     public function postEdit(Request $request, $id)
     {
         $validateRules = [
-            'fullname' => 'required|min:6|regex:/^([a-zA-Z]+)(\s[a-zA-Z]+)*$/',
+            'fullname' => ['required', 'string', 'max:255'],
             'email' => 'required|email',
             'role_id' => 'required',
         ];
@@ -81,11 +81,11 @@ class UserController extends Controller
         if ($request->has('password')) {
             $user = DB::table('users')->where('id', $id)->limit(1);
             $user->update([
-                'username' => $request->input('username'),
+                // 'username' => $request->input('username'),
                 'fullname' => $request->input('fullname'),
                 'email' => $request->input('email'),
-                'address' => $request->input('address'),
-                'phone' => $request->input('phone'),
+                // 'address' => $request->input('address'),
+                // 'phone' => $request->input('phone'),
                 'role_id' => $request->input('role_id'),
                 'password' => Hash::make($request->password)
             ]);
@@ -93,11 +93,11 @@ class UserController extends Controller
         } else {
             $user = DB::table('users')->where('id', $id)->limit(1);
             $user->update([
-                'username' => $request->input('username'),
+                // 'username' => $request->input('username'),
                 'fullname' => $request->input('fullname'),
                 'email' => $request->input('email'),
-                'address' => $request->input('address'),
-                'phone' => $request->input('phone'),
+                // 'address' => $request->input('address'),
+                // 'phone' => $request->input('phone'),
                 'role_id' => $request->input('role_id'),
             ]);
             return redirect()->route('admin.user.edit', ['id' => $id])->with('success', 'Cập nhật người dùng thành công.');
@@ -120,7 +120,7 @@ class UserController extends Controller
     {
         $user = $request->session()->get('auth');
         $validateRules = [
-            'fullname' => 'required|min:6|regex:/^([a-zA-Z]+)(\s[a-zA-Z]+)*$/',
+            'fullname' => ['required', 'string', 'max:255'],
             'password' => 'min:6',
             'password_confirmation' => 'required_with:password|same:password|min:6',
         ];
@@ -141,7 +141,7 @@ class UserController extends Controller
     public function postEventUser(Request $request)
     {
         $validateRules = [
-            'name' => 'required|min:6',
+            'name' => 'required|min:6|max:255',
             'content' => 'required',
             'amount' => 'required|numeric',
             'time' => 'required',
@@ -172,7 +172,7 @@ class UserController extends Controller
     public function editUserClient(Request $request)
     {
         $validateRules = [
-            'fullname' => 'required|min:6',
+            'fullname' => ['required', 'string', 'max:255'],
         ];
         $validator = Validator::make($request->all(), $validateRules);
         if ($validator->fails()) {

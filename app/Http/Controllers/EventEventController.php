@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\User;
 use App\createEvent;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -178,8 +178,10 @@ class EventEventController extends Controller
     public function getEventDetail($id)
     {
         $event = DB::table('event')->where('id', $id)->first();
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $data = [
-            'event' => $event
+            'event' => $event,
+            'today' => $today
         ];
         return view('event.view-event', $data);
     }
@@ -229,12 +231,16 @@ class EventEventController extends Controller
         $event_favourite = DB::table('event')->orderBy('member', 'DESC')->take(3)->get();
     }
 
-    public function getEventCategoty($id)
+    public function getEventCategory($id)
     {
         $event = DB::table('event')->join('categories', 'event.category_id', '=', 'categories.id')->where('category_id', $id)->get();
-        // dd($event);
-        // if($event->name)
-        return view('event.view-list-event', ['event' => $event]);
+
+        $event1 = DB::table('event')->select('event.id','image','time','address','name_event')->join('categories', 'event.category_id', '=', 'categories.id')->where('category_id', $id)->get();
+ 
+         // dd($event);
+         // if($event->name)
+ 
+         return view('event.view-list-event', ['event' => $event,'event1'=>$event1]);
     }
 
     public function deleteEventUser($id)

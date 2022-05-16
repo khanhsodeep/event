@@ -1,12 +1,17 @@
 @extends('layouts.app')
   
 @section('content')
-<main class="login-form mt-5">
-  <div class="cotainer">
+
+<section id="buy-tickets" class="section-with-bg">
+</section>
+<section id="buy-tickets" class="section-with-bg">
+<main class="login-form m-5">
+@include('sweetalert::alert')
+  <div class="container">
       <div class="row justify-content-center">
           <div class="col-md-8">
               <div class="card">
-                  <div class="card-header">Reset Password</div>
+                  <div class="card-header">Đặt lại mật khẩu</div>
                   <div class="card-body">
   
                     @if (Session::has('message'))
@@ -18,7 +23,7 @@
                       <form action="{{ route('forget.password.post') }}" method="POST">
                           @csrf
                           <div class="form-group row">
-                              <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
+                              <label for="email_address" class="col-md-4 col-form-label text-md-right">Email</label>
                               <div class="col-md-6">
                                   <input type="text" id="email_address" class="form-control" name="email" required autofocus>
                                   @if ($errors->has('email'))
@@ -26,9 +31,9 @@
                                   @endif
                               </div>
                           </div>
-                          <div class="col-md-6 offset-md-4">
+                          <div class="col-md-6 offset-md-4 mt-2">
                               <button type="submit" class="btn btn-primary">
-                                  Send Password Reset Link
+                                  Gửi đường dẫn đặt lại mật khẩu
                               </button>
                           </div>
                       </form>
@@ -39,4 +44,6 @@
       </div>
   </div>
 </main>
+</section>
+
 @endsection

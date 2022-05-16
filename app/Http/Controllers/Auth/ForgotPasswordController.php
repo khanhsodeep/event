@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
   
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request; 
-use DB; 
 use Carbon\Carbon; 
-use App\Models\User; 
-use Mail; 
-use Hash;
+use App\User; 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
   
 class ForgotPasswordController extends Controller
@@ -47,7 +47,7 @@ class ForgotPasswordController extends Controller
               $message->subject('Reset Password');
           });
   
-          return back()->with('message', 'We have e-mailed your password reset link!');
+          return back()->with('message', 'Một đường dẫn đặt lại mật khẩu đã được gửi đến email của bạn!');
       }
       /**
        * Write code on Method
@@ -79,7 +79,7 @@ class ForgotPasswordController extends Controller
                               ->first();
   
           if(!$updatePassword){
-              return back()->withInput()->with('error', 'Invalid token!');
+            return back()->with('message', 'Token không hợp lệ!');
           }
   
           $user = User::where('email', $request->email)
@@ -87,6 +87,6 @@ class ForgotPasswordController extends Controller
  
           DB::table('password_resets')->where(['email'=> $request->email])->delete();
   
-          return redirect('/login')->with('message', 'Your password has been changed!');
+          return back()->with('message', 'Đặt lại mật khẩu thành công! Bạn có thể đăng nhập với mật khẩu mới!');
       }
 }   

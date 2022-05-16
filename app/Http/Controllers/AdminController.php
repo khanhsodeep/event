@@ -3,17 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function showImportantInfo()
-    {
-        return 'Here is password: abc';
-    }
-
     public function getLoginAdmin(Request $request)
     {
         if ($request->session()->has('auth')) {

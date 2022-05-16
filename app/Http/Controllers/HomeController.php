@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Newsletter;
 
@@ -18,7 +18,7 @@ class HomeController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth', 'verified']);
+        // $this->middleware(['auth', 'verified']);
     }
     /**
      * Show the application dashboard.

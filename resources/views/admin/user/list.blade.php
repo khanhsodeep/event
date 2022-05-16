@@ -112,22 +112,22 @@ Quản lý người dùng
                     <table id="example2" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th  class="text-center">Username</th>
+                                <!-- <th  class="text-center">Username</th> -->
                                 <th  class="text-center">Họ tên</th>
                                 <th  class="text-center">Email</th>
-                                <th  class="text-center">Địa chỉ</th>
-                                <th  class="text-center">SĐT</th>
+                                <!-- <th  class="text-center">Địa chỉ</th>
+                                <th  class="text-center">SĐT</th> -->
                                 <th  class="text-center">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as  $user)
                             <tr>
-                                <td>{{$user->username}}</td>
+                                <!-- <td>{{$user->username}}</td> -->
                                 <td>{{$user->fullname}}</td>
                                 <td>{{$user->email}}</td>
-                                <td>{{$user->address}}</td>
-                                <td>{{$user->phone}}</td>
+                                <!-- <td>{{$user->address}}</td>
+                                <td>{{$user->phone}}</td> -->
                                 <td class="project-actions text-center">
                                     <a href="{{route('admin.user.edit', ['id' => $user->id])}}" class="btn btn-info btn-sm">
                                         <i class="fas fa-pencil-alt"> </i>
@@ -144,11 +144,11 @@ Quản lý người dùng
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th  class="text-center">Username</th>
+                                <!-- <th  class="text-center">Username</th> -->
                                 <th  class="text-center">Họ tên</th>
                                 <th  class="text-center">Email</th>
-                                <th  class="text-center">Địa chỉ</th>
-                                <th  class="text-center">SĐT</th>
+                                <!-- <th  class="text-center">Địa chỉ</th>
+                                <th  class="text-center">SĐT</th> -->
                                 <th  class="text-center">Thao tác</th>
                             </tr>
                         </tfoot>
