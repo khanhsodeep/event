@@ -31,10 +31,10 @@ class HomeController extends Controller
             try {
                 if (Newsletter::isSubscribed($request->email)) {
 
-                    return redirect()->back()->with('error', 'Email đã đăng ký nhận tin rồi!');
+                    return redirect()->back()->with('error', 'Email đã đăng ký nhận tin rồi.');
                 } else {
                     Newsletter::Subscribe($request->email);
-                    return redirect()->back()->with('success', 'Đăng ký nhận tin thành công!');
+                    return redirect()->back()->with('success', 'Đăng ký nhận tin thành công.');
                 }
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', $e->getMessage());
