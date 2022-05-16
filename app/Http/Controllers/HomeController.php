@@ -25,21 +25,21 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function subscribe(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
-        try {
-            if (Newsletter::isSubscribed($request->email)) {
+        public function subscribe(Request $request)
+        {
+            $request->validate(['email' => 'required|email']);
+            try {
+                if (Newsletter::isSubscribed($request->email)) {
 
-                return redirect()->back()->with('error', 'Email đã đăng ký nhận tin rồi!');
-            } else {
-                Newsletter::Subscribe($request->email);
-                return redirect()->back()->with('success', 'Đăng ký nhận tin thành công!');
+                    return redirect()->back()->with('error', 'Email đã đăng ký nhận tin rồi!');
+                } else {
+                    Newsletter::Subscribe($request->email);
+                    return redirect()->back()->with('success', 'Đăng ký nhận tin thành công!');
+                }
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', $e->getMessage());
             }
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
         }
-    }
     public function index()
     {
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');

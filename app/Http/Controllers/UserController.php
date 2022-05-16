@@ -36,7 +36,7 @@ class UserController extends Controller
     public function postAdd(Request $request)
     {
         $validateRules = [
-            'fullname' => ['required', 'string', 'max:255'],
+            'fullname' => 'required', 'regex:/^[a-zA-Z ]+$/', 'max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role_id' => 'required',
@@ -70,7 +70,7 @@ class UserController extends Controller
     public function postEdit(Request $request, $id)
     {
         $validateRules = [
-            'fullname' => ['required', 'string', 'max:255'],
+            'fullname' => ['required', 'regex:/^[a-zA-Z ]+$/', 'max:255'],
             'email' => 'required|email',
             'role_id' => 'required',
         ];
@@ -120,7 +120,7 @@ class UserController extends Controller
     {
         $user = $request->session()->get('auth');
         $validateRules = [
-            'fullname' => ['required', 'string', 'max:255'],
+            'fullname' => ['required', 'regex:/^[a-zA-Z ]+$/', 'max:255'],
             'password' => 'min:6',
             'password_confirmation' => 'required_with:password|same:password|min:6',
         ];
@@ -172,7 +172,7 @@ class UserController extends Controller
     public function editUserClient(Request $request)
     {
         $validateRules = [
-            'fullname' => ['required', 'string', 'max:255'],
+            'fullname' => ['required', 'regex:/^[a-zA-Z ]+$/', 'max:255'],
         ];
         $validator = Validator::make($request->all(), $validateRules);
         if ($validator->fails()) {

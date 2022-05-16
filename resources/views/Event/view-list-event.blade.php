@@ -17,10 +17,10 @@
                             <h3><a href="{{route('user.event.detail', ['id' => $v->id])}}">{{$v->name_event}}</a></h3>
                             <p>{{$v->time}}, {{$v->address}}</p>
                             <div class="social">
-                            @if (Auth::check())
+                            
                          
                                 <a class="buy-tickets scrollto" href="{{route('user.event.detail', ['id' => $v->id])}}">Tham gia ngay</a>
-                            @endif
+                           
                             </div>
                         </div>
                     </div>
