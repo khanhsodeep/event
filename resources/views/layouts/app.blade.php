@@ -82,7 +82,7 @@
                         @endif
                         
                         @else
-                        <ul class="dropdown dropdown-custom">
+                        <li class="dropdown dropdown-custom">
                         <a>
                             <span>Xin chào, {{ Auth::user()->fullname }}</span>
                         </a>
@@ -102,7 +102,7 @@
 
                         </ul>
                         @endguest
-                    </ul>
+                    </li>
 
 
                 </ul>

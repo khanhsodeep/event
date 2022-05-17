@@ -58,6 +58,11 @@
       padding: 15px 30px;
     }
   }
+  @media (min-width: 414px) {
+    .tabs-to-dropdown .nav-wrapper {
+      padding: 15px 30px;
+    }
+  }
   
   
   /* FOOTER STYLES

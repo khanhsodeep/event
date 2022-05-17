@@ -172,18 +172,18 @@ class EventEventController extends Controller
 
     public function getEvent()
     {
-        return view('view-event');
+        return view('event.view-event');
     }
 
     public function getEventDetail($id)
     {
-       $event = DB::table('event')->where('id', $id)->first();
+        $event = DB::table('event')->where('id', $id)->first();
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $data = [
             'event' => $event,
             'today' => $today
         ];
-        return view('view-event', $data);
+        return view('event.view-event', $data);
     }
 
     public function postEventDetail(Request $request, $id)

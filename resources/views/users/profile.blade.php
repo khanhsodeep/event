@@ -78,7 +78,7 @@
             <div class="col-md-12">
                 <div id="content" class="content content-full-width">
                     <!-- begin profile -->
-                    <div class="profile">
+                    <div class="profile mt-5">
                         <div class="profile-header">
                             <!-- BEGIN profile-header-cover -->
                             <div class="profile-header-cover"></div>

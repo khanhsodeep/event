@@ -20,7 +20,7 @@
                             <div class="social">
                             
                          
-                                <a class="buy-tickets scrollto" href="{{route('user.event.detail', ['id' => $v->id])}}">Tham gia ngay!</a>
+                                <a class="buy-tickets scrollto" href="{{route('user.event.detail', ['id' => $v->id])}}">Tham gia ngay</a>
                            
                             </div>
                         </div>
