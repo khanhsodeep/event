@@ -33,7 +33,7 @@
                           </div>
   
                           <div class="form-group row">
-                              <label for="password" class="col-md-4 col-form-label text-md-right mt-2">Mật khẩu</label>
+                              <label for="password" class="col-md-4 col-form-label text-md-right mt-2">Mật khẩu mới</label>
                               <div class="col-md-6">
                                   <input type="password" id="password" class="form-control" name="password" required autofocus>
                                   @if ($errors->has('password'))

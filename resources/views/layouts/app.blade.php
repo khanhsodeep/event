@@ -41,7 +41,7 @@
     <header id="header" class="d-flex align-items-center">
         <div class="container-fluid container-xxl d-flex align-items-center">
             <div id="logo" class="me-auto ">
-                <a href="#" class="scrollto"><img src="/img/logo.png" alt="" title="" /></a>
+                <a href="{{ route('home') }}" class="scrollto"><img src="/img/logo.png" alt="" title="" /></a>
             </div>
 
             <nav id="navbar" class="navbar order-last order-lg-0 me-auto">
