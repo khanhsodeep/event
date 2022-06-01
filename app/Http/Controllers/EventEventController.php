@@ -16,32 +16,21 @@ use Carbon\Carbon;
 
 class EventEventController extends Controller
 {
-    public function getList()
+    public function getList(Request $request)
     {
         $events = createEvent::all();
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
         $data = [
-            'events' => $events
+            'events' => $events,
+            'today' => $today
         ];
-        return view('admin/event/list', $data);
+        if ($request->session()->has('auth')) {
+            return view('admin/event/list', $data);
+        } else {
+            return redirect()->route('admin.login');
+        }
     }
-    public function getDashboard()
-    {
-        $events = createEvent::all();
-      
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
 
-        $event_favourites = DB::table('event')->orderBy('member', 'DESC')->where('status', 1)->where('event.time','<',$today)->take(1)->get();
-        $data = [
-            'events' => $events
-        ];
-        $counts = DB::table('event')->count();
-        $countuser = DB::table('users')->count();
-        $countuser_create = DB::table('event')->addSelect(DB::raw('email'))->addSelect(DB::raw('count(event.id) as total'))->groupBy('user_id','email')->orderByDesc('total')->join('users','event.user_id','=','users.id')->take(1)->get();
-        $countstatus = DB::table('event')->addSelect(DB::raw('count(*) as total'))->where('status','=', '1')->get();
-        $countstatus_non = DB::table('event')->addSelect(DB::raw('count(*) as total'))->where('status','=', '0')->get();
-        return view('layouts.admin.dashboard',$data)->with(compact('counts','event_favourites','countuser','countuser_create','countstatus','countstatus_non'));
-    }
-    
 
     public function getAdd()
     {
@@ -52,20 +41,18 @@ class EventEventController extends Controller
 
     public function postAdd(Request $request)
     {
-        $validateRules = [
+        $validateRules =$request->validate( [
             'image' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'name' => 'required|min:6',
             'content' => 'required',
             'status' => 'required',
             'category_id' => 'required',
             'amount' => 'required|numeric',
-            'time' => 'required',
+            'time' =>'required|date|after:tomorrow',
             'address' => 'required',
-        ];
+        ]);
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
         $validator = Validator::make($request->all(), $validateRules);
-        if ($validator->fails()) {
-            return redirect()->route("admin.event.add")->withErrors($validator)->withInput();
-        }
         $fileName = auth()->id() . '_' . time() . '.' . $request->file('image')->extension();
         $request->file('image')->move(public_path('file'), $fileName);
         $auth = $request->session()->get('auth');
@@ -79,10 +66,11 @@ class EventEventController extends Controller
             'time' => $request->time,
             'address' => $request->address,
             'image' => $fileName,
+            'today' => $today,
         ];
 
         DB::table('event')->insert($data);
-        return redirect()->route('admin.event.add')->with('success', 'Tạo sự kiện thành công.');
+        return redirect()->route('admin.event')->with('success', 'Tạo sự kiện thành công.');
     }
 
     public function getEdit($id)
@@ -95,20 +83,16 @@ class EventEventController extends Controller
 
     public function postEdit(Request $request, $id)
     {
-        $validateRules = [
+        $request->validate( [
             'name' => 'required|min:6',
             'content' => 'required',
             'status' => 'required',
             'category_id' => 'required',
             'amount' => 'required|numeric',
-            'time' => 'required',
+            'time' => 'required|date|after:tomorrow',
             'address' => 'required',
-        ];
-        $validator = Validator::make($request->all(), $validateRules);
-        if ($validator->fails()) {
-            return redirect()->route("admin.event", ['id' => $id])->withErrors($validator)->withInput();
-        }
-        $auth = $request->session()->get('auth');
+        ]);
+    ;
         if ($request->has('image') && $request->file('image')) {
             $event = DB::table('event')->where('id', $id)->limit(1);
             $fileName = auth()->id() . '_' . time() . '.' . $request->file('image')->extension();
@@ -119,7 +103,6 @@ class EventEventController extends Controller
                 'status' => $request->input('status'),
                 'category_id' => $request->input('category_id'),
                 'amount' => $request->input('amount'),
-                'user_id' => $auth->id,
                 'time' => $request->time,
                 'address' => $request->address,
                 'image' => $fileName,
@@ -133,11 +116,10 @@ class EventEventController extends Controller
                 'status' => $request->input('status'),
                 'category_id' => $request->input('category_id'),
                 'amount' => $request->input('amount'),
-                'user_id' => $auth->id,
                 'time' => $request->time,
                 'address' => $request->address,
             ]);
-            return redirect()->route('admin.event.edit', ['id' => $id])->with('success', 'Cập nhật sự kiện thành công.');
+            return redirect()->route('admin.event', ['id' => $id])->with('success', 'Cập nhật sự kiện thành công.');
         }
     }
 
@@ -146,28 +128,23 @@ class EventEventController extends Controller
         DB::table('event')->where('id', $id)->delete();
         return redirect()->route('admin.event')->with('success', 'Xóa sự kiện thành công.');
     }
-    public function DeleteTicket( $id)
+    public function DeleteTicket($id)
     {
         $event = DB::table('event')->join('ticket', 'event.id', '=', 'ticket.event_id')->where('ticket.id', $id)->first();
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-       if ($event->time < $today){
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
+        if ($event->time < $today) {
             return redirect()->back()->with('warning', 'Sự kiện đã kết thúc.');
-
-        }
-        else{ 
+        } elseif ($event->status == 1) {
+            return redirect()->back()->with('warning', 'Bạn đã điểm danh, không thể hủy vé.');
+        } else {
             DB::table('event')->join('ticket', 'event.id', '=', 'ticket.event_id')->where('ticket.id', $id)
-            ->update([
-                'amount' => DB::raw('amount+1'),
-                'member' => DB::raw('member-1'),
-               
-                
-            ]);
+                ->update([
+                    'amount' => DB::raw('amount+1'),
+                    'member' => DB::raw('member-1'),
+                ]);
             DB::table('ticket')->where('id', $id)->delete();
-        
-
             return redirect()->back()->with('success', 'Huỷ tham gia thành công.');
-   } 
-       
+        }
     }
 
     public function getEvent()
@@ -177,8 +154,8 @@ class EventEventController extends Controller
 
     public function getEventDetail($id)
     {
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
         $event = DB::table('event')->where('id', $id)->first();
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $data = [
             'event' => $event,
             'today' => $today
@@ -186,43 +163,38 @@ class EventEventController extends Controller
         return view('event.view-event', $data);
     }
 
-    public function postEventDetail(Request $request, $id)
+    public function postEventDetail($id)
     {
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-      
+
+
         $event = DB::table('event')->where('id', $id)->first();
-        $ticket = DB::table('event')->join('ticket', 'event.id', '=', 'ticket.event_id')->where('ticket.event_id', $id)->first();
-        $user = DB::table('ticket')->join('users', 'users.id', '=', 'ticket.user_id')->where('ticket.user_id', Auth::user()->id)->first();
-        
-        if ($event->amount - $event->member == 0) {
-            return redirect()->back()->with('warning', 'Đã hết vé.');
-        }
-     elseif ($event-> time < $today){
-            return redirect()->back()->with('warning', 'Sự kiện đã kết thúc.');
 
-        } 
-        elseif(!$ticket || !$user){
+
+        $user = (DB::table('ticket')->select('ticket.event_id')->join('users', 'users.id', '=', 'ticket.user_id')->join('event', 'event.id', '=', 'ticket.event_id'))->where('users.id', Auth::user()->id)->where('event.id', $id)->get();
+        if (!empty($user)) {
+            foreach ($user as $user) {
+                if ($event->id == $user->event_id) {
+                    return redirect()->back()->with('warning', 'Đã đăng ký sự kiện này.');
+                }
+            }
             DB::table('event')
-            ->where('id', $id)
-            ->update([
-                'member' => DB::raw('member + 1'),
-            ]);
-        DB::table('event')
-            ->where('id', $id)
-            ->update([
-                'amount' => DB::raw('amount'),
-            ]);
-        $data = [
-            'code' => Str::random(10),
-            'user_id' => Auth::user()->id,
-            'event_id' => $event->id
-        ];
+                ->where('id', $id)
+                ->update([
+                    'member' => DB::raw('member + 1'),
+                ]);
+            DB::table('event')
+                ->where('id', $id)
+                ->update([
+                    'amount' => DB::raw('amount-1'),
+                ]);
+            $data = [
+                'code' => Str::random(10),
+                'user_id' => Auth::user()->id,
+                'event_id' => $event->id
+            ];
 
-        DB::table('ticket')->insert($data);
-        return redirect()->back()->with('success', 'Tham gia sự kiện thành công.');
-        }
-        else{
-            return redirect()->back()->with('warning', 'Đã đăng ký sự kiện này.'); 
+            DB::table('ticket')->insert($data);
+            return redirect()->back()->with('success', 'Tham gia sự kiện thành công.');
         }
     }
 
@@ -235,12 +207,12 @@ class EventEventController extends Controller
     {
         $event = DB::table('event')->join('categories', 'event.category_id', '=', 'categories.id')->where('category_id', $id)->get();
 
-        $event1 = DB::table('event')->select('event.id','image','time','address','name_event')->join('categories', 'event.category_id', '=', 'categories.id')->where('category_id', $id)->get();
- 
-         // dd($event);
-         // if($event->name)
- 
-         return view('event.view-list-event', ['event' => $event,'event1'=>$event1]);
+        $event1 = DB::table('event')->orderBy('time', 'DESC')->select('event.id', 'image', 'time', 'address', 'name_event')->join('categories', 'event.category_id', '=', 'categories.id')->where('category_id', $id)->get();
+
+        // dd($event);
+        // if($event->name)
+
+        return view('event.view-list-event', ['event' => $event, 'event1' => $event1]);
     }
 
     public function deleteEventUser($id)
@@ -254,6 +226,7 @@ class EventEventController extends Controller
 
     public function editEventUser($id)
     {
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
         $user = Auth::user();
         $list_event_participation = DB::table('event')->join('ticket', 'event.id', '=', 'ticket.event_id')->where('ticket.user_id', Auth::user()->id)->get();
         $event = DB::table('event')->where('user_id', Auth::user()->id)->get();
@@ -263,9 +236,11 @@ class EventEventController extends Controller
         if (!$user_event) {
             return redirect()->back()->with('error', 'Thông tin sự kiện không tồn tại.');
         }
+
         $data = [
             'event' => $event,
             'user' => $user,
+            'today' => $today,
             'list_event_participation' => $list_event_participation,
             'user_event' => $user_event,
             'listCategory' => $listCategory,
@@ -275,19 +250,16 @@ class EventEventController extends Controller
 
     public function putEventUser(Request $request, $id)
     {
-        $validateRules = [
+        $validateRules =$request->validate([
             'name' => 'required|min:6',
             'content' => 'required',
-            // 'status' => 'required',
             'category_id' => 'required',
             'amount' => 'required|numeric',
-            'time' => 'required',
+            'time' => 'required|date|after:tomorrow',
             'address' => 'required',
-        ];
+        ]);
+    
         $validator = Validator::make($request->all(), $validateRules);
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
         if ($request->has('image') && $request->file('image')) {
             $user_event = DB::table('event')->where('user_id', Auth::user())->orWhere('id', $id)->limit(1);
             $user_event->update([
@@ -316,6 +288,18 @@ class EventEventController extends Controller
                 // 'image' => $request->image
             ]);
             return redirect()->route('/home/profile')->with('success', 'Cập nhật sự kiện thành công.');
+        }
+    }
+    public function getEventAttendance(Request $request)
+    {
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+        $eventList = DB::table("event")->orderBy('time', 'DESC')->get();
+        $data = ['eventList' => $eventList, 'today' => $today];
+
+        if ($request->session()->has('auth')) {
+            return view("admin/attendance/attendance", $data);
+        } else {
+            return redirect()->route('admin.login');
         }
     }
 }

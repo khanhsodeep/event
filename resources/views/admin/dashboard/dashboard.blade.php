@@ -90,8 +90,9 @@
     });
 </script>
 @endpush
+
 @section('page-title')
-Quản lý Sự kiện
+Tổng quan
 @endsection
 
 @section('content')
@@ -102,88 +103,52 @@ Quản lý Sự kiện
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/event/add" class="btn btn-outline-success m-2">
-                        Thêm Sự kiện
-                    </a>
+                    <h1 class="btn btn-outline-success m-2">
+                        Thống kê sự kiện
+                        <h1>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-striped table-bordered table-hover">
+                    <table id="example2" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="text-center">Tên</th>
-                                <!-- <th class="text-center">Nội dung</th> -->
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Danh mục</th>
-                                <th class="text-center">Hình ảnh</th>
-                                <th class="text-center">Số vé</th>
-                                <th class="text-center">Số người tham gia</th>
-                                <th class="text-center">Số vé còn lại</th>
-                                <th class="text-center">Thời gian</th>
-                                <th class="text-center">Địa điểm</th>
-                                <th class="text-center">Thao tác</th>
+                                <th class="text-center">Tổng số sự kiện</th>
+                                <th class="text-center">Sự kiện nhiều người tham gia trong tuần</th>
+                                <th class="text-center">Số lượng người tham gia sự kiện</th>
+                                <th class="text-center">Người dùng tạo nhiều sự kiện nhất</th>
+                                <th class="text-center">Tổng số sự kiện người dùng đã tạo</th>
+                                <th class="text-center">Tổng số sự kiện đã duyệt</th>
+                                <th class="text-center">Tổng số sự kiện chưa duyệt</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($events as $event)
                             <tr>
-                                <td class="text-bold">{{$event->name_event}}</td>
-                                <!-- <td>{{strip_tags($event->content)}}</td> -->
-                                <td>
-                                    @if($event->status == 0)
-                                    <a class="text-bold text-center text-danger">Đóng</a>
-                                        
-                                    @elseif($event->status == 1)
-                                    <a class="text-bold text-center text-success">Mở</a>
-                                  
-                                    @endif
-                                </td>
-                                <!-- <td>{{$event->category}}</td> -->
-                                <td>{{ !empty($event->category) ? $event->category->name:'' }}</td>
-                                <td><img src="{{ asset('file/' . $event->image) }}" style="height: 50px; width: 50px;"></td>
-                                <td class="text-bold text-center text-success">{{$event->amount}}</td>
-                                <td class="text-bold text-center text-primary">{{$event->member}}</td>
-                                <td class="text-bold text-center text-danger">{{$event->amount -$event->member}}</td> 
-                                <td>{{$event->time}}</td>
-                                <td>{{$event->address}}</td>
-                                @if($today < $event->time)
-                                <td class="project-actions text-center">
-                                    <a href="{{route('admin.event.edit', ['id' => $event->id])}}" class="btn btn-warning btn-sm mb-1">
-                                        <i class="fas fa-pencil-alt"> </i>
-                                        Sửa
-                                    </a>
-                                    <a href="{{route('admin.event.delete', ['id' => $event->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn xóa Sự kiện này')">
-                                        <i class="fas fa-trash"> </i>
-                                        Xóa
-                                    </a>
-                                </td>
-                                @else
-                                <td class="project-actions text-center">
-                                    <a class="btn btn-secondary btn-sm mb-1">
-                                 
-                                        Đã kết thúc
-                                    </a>
-                                    
-                                </td>
-                                @endif
+
+                                @foreach ((array)$counts as $count)
+                                <td class="text-center">{{$count}}</td>
+                                @endforeach
+                                @foreach ($event_favourites as $v)
+                                <td class="text-center"> <a target="_blank" href="{{ route('user.event.detail', ['id' => $v->id]) }}"> {{$v->name_event}}</a></td>
+                                @endforeach
+
+                                @foreach ($event_favourites as $v)
+                                <td class="text-center">{{$v->member}}</td>
+                                @endforeach
+                                @foreach ($countuser_create as $count)
+                                <td class="text-center"> {{$count->email}}</td>
+                                @endforeach
+                                @foreach ($countuser_create as $count)
+                                <td class="text-center"> {{$count->total}}</td>
+                                @endforeach
+                                @foreach ($countstatus as $count)
+                                <td class="text-center"> {{$count->total}}</td>
+                                @endforeach
+                                @foreach ($countstatus_non as $count)
+                                <td class="text-center"> {{$count->total}}</td>
+                                @endforeach
                             </tr>
-                            @endforeach
+
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th class="text-center">Tên</th>
-                                <!-- <th class="text-center">Nội dung</th> -->
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Danh mục</th>
-                                <th class="text-center">Hình ảnh</th>
-                                <th class="text-center">Số vé</th>
-                                <th class="text-center">Số người tham gia</th>
-                                <th class="text-center">Số vé còn lại</th>
-                                <th class="text-center">Thời gian</th>
-                                <th class="text-center">Địa điểm</th>
-                                <th class="text-center">Thao tác</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
                 <!-- /.card-body -->
@@ -195,3 +160,4 @@ Quản lý Sự kiện
     <!-- /.row -->
 </div>
 @endsection
+

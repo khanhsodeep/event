@@ -50,8 +50,8 @@
                 <p>Ở đây có các sự kiện sắp diễn ra được tham gia nhiều nhất</p>
             </div>
             <div class="row" data-aos="fade-up" data-aos-delay="100">
-            @foreach($event_favourite as $v)
-                
+                @foreach($event_favourite as $v)
+
                 <div class="col-lg-4 col-md-6">
                     <div class="like">
                         <div class="like-img">
@@ -61,7 +61,7 @@
                             <a href="{{ route('user.event.detail', ['id' => $v->id]) }}">{{$v->name_event}}</a>
                         </h3>
                         <div class="hearts">
-                            <i class="bi bi-heart-fill"> {{$v->member}} lượt tham gia</i>
+                            <i class="bi bi-person-plus-fill"> {{$v->member}} lượt tham gia</i>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
         </div>
     </section>
     <!-- End likes Section -->
-   
+
     <!-- ======= Gallery Section ======= -->
     <section id="gallery">
         <div class="container" data-aos="fade-up">
@@ -173,6 +173,18 @@
     <!-- ======= Subscribe Section ======= -->
     <section id="subscribe">
         <div class="container" data-aos="zoom-in">
+            @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ $message }}</strong>
+            </div>
+            @endif
+            @if ($message = Session::get('error'))
+            <div class="alert alert-danger alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ $message }}</strong>
+            </div>
+            @endif
             @include('sweetalert::alert')
             <div class="section-header">
                 <h2>NHẬN THÔNG TIN SỰ KIỆN</h2>
@@ -191,120 +203,7 @@
                     </div>
                 </div>
             </form>
-            @if($errors->any('email'))
-            <span class="text-danger">
-                {{$errors->first('email')}}
-            </span>
-            @endif
-           
         </div>
     </section>
-    <!-- End Subscribe Section -->
-
-    <!-- ======= Contact Section ======= -->
-    <!-- <section id="contact" class="section-bg">
-        <div class="container" data-aos="fade-up">
-          <div class="section-header">
-            <h2>Liên hệ</h2>
-            <p>Liên hệ với phòng sự kiện nếu bạn có thắc mắc</p>
-          </div>
-
-          <div class="row contact-info">
-            <div class="col-md-4">
-              <div class="contact-address">
-                <i class="bi bi-geo-alt"></i>
-                <h3>Địa chỉ</h3>
-                <address>
-                  69/68 Đặng Thùy Trâm, phường 13, Bình Thạnh, thành phố Hồ Chí
-                  Minh
-                </address>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="contact-phone">
-                <i class="bi bi-phone"></i>
-                <h3>Điện thoại</h3>
-                <p><a href="tel:+0287199218">028 7109 9212 (Ext: 3110)</a></p>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="contact-email">
-                <i class="bi bi-envelope"></i>
-                <h3>Email</h3>
-                <p>
-                  <a href="mailto:sukien.vanlanguni.edu.vn"
-                    >sukien.vanlanguni.edu.vn</a
-                  >
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="form">
-            <form
-              action="forms/contact.php"
-              method="post"
-              role="form"
-              class="php-email-form"
-            >
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <input
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    id="name"
-                    placeholder="Họ và tên"
-                    required
-                  />
-                </div>
-                <div class="form-group col-md-6 mt-3 mt-md-0">
-                  <input
-                    type="email"
-                    class="form-control"
-                    name="email"
-                    id="email"
-                    placeholder="Email"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="form-group mt-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  name="subject"
-                  id="subject"
-                  placeholder="Chủ đề"
-                  required
-                />
-              </div>
-              <div class="form-group mt-3">
-                <textarea
-                  class="form-control"
-                  name="message"
-                  rows="5"
-                  placeholder="Nội dung cần hỗ trợ"
-                  required
-                ></textarea>
-              </div>
-              <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">
-                  Thông tin của bạn đã được gửi. Vui lòng chờ phản hồi qua
-                  email!
-                </div>
-              </div>
-              <div class="text-center">
-                <button type="submit">Gửi hỗ trợ</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </section> -->
-    <!-- End Contact Section -->
 </main>
 @endsection

@@ -128,11 +128,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-with-bg {
-  background-color: #e0e0e0;
-  /* background: url(../img/hero-bg2.jpg) top center;
-  background-size: cover;
-  overflow: hidden;
-  position: relative; */
+  background-color: #ffffff;
 }
 
 /*--------------------------------------------------------------
@@ -263,6 +259,9 @@ transition: linear ;
   line-height: 0;
   margin-left: 5px;
 }
+ul > li > a{
+  text-decoration: none;
+}
 .navbar > ul > li > a:before {
   content: "";
   position: absolute;
@@ -273,6 +272,7 @@ transition: linear ;
   background-color: var(--primary-color);
   visibility: hidden;
   transition: all 0.3s ease-in-out 0s;
+
 }
 .navbar a:hover:before, .navbar li:hover > a:before, .navbar .active:before {
   visibility: visible;
@@ -280,6 +280,7 @@ transition: linear ;
 }
 .navbar a:hover, .navbar .active, .navbar .active:focus, .navbar li:hover > a {
   color: #fff;
+  text-decoration: none;
 }
 .navbar .dropdown ul {
   display: block;
@@ -1305,4 +1306,3 @@ color:#e0072f
 #footer .footer-top .footer-newsletter input[type=submit]:hover {
   background: #e0072f;
 }
-

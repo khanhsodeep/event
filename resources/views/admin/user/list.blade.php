@@ -109,7 +109,7 @@ Quản lý người dùng
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
+                    <table id="example2" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <!-- <th  class="text-center">Username</th> -->

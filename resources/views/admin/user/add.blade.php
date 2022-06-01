@@ -91,7 +91,7 @@ Thêm người dùng
                 </div> -->
                 <div class="form-group col-6">
                     <label for="fullname">Họ tên</label>
-                    <input type="text" id="fullname" name="fullname" class="form-control">
+                    <input type="text" id="fullname" name="fullname" class="form-control" required>
                 </div>
             </div>
             <div class="row">

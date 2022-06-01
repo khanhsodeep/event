@@ -35,6 +35,13 @@ Route::get('/', function () {
 Auth::routes();
 Auth::routes(['verify' => true]);
 Route::get('/home/qr-code/{id}', 'QrCodeGeneratorController@getTicket')->name('user.home.qr-code');
+
+Route::get('/admin/attendance', 'EventEventController@getEventAttendance')->name('admin.attendance.attendance');
+Route::get('/admin/attendance/{id}', 'QrCodeGeneratorController@getscanqrcode')->name('admin.attendance');
+Route::post('/admin/attendance/{id}', 'QrCodeGeneratorController@postscanqrcode')->name('admin.attendance');
+Route::get('/admin/attendance/export-excel/{id}', 'QrCodeGeneratorController@exportExcel')->name('admin.attendance.export-excel');
+
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/home/profile/{id?}', 'HomeController@userProfile')->name('/home/profile');
@@ -42,7 +49,7 @@ Route::get('/home/profile/{id?}', 'HomeController@userProfile')->name('/home/pro
 Route::get('/admin/login', 'AdminController@getLoginAdmin')->name('admin.login');
 Route::post('/admin/login', 'AdminController@postLoginAdmin');
 
-Route::get('/admin/dashboard', 'EventEventController@getDashboard')->name('admin.dashboard')->middleware('login-admin');
+Route::get('/admin/dashboard', 'AdminController@getDashboard')->name('admin.dashboard.dashboard');
 
 Route::get('/admin/user', 'UserController@getList')->name('admin.user');
 Route::get('/admin/user/add', 'UserController@getAdd')->name('admin.user.add');
@@ -61,7 +68,10 @@ Route::get('/admin/event/delete/{id}', 'EventEventController@getDelete')->name('
 Route::get('/admin/profile', 'UserController@getProfile')->name('admin.profile');
 Route::put('/admin/profile', 'UserController@editProfile')->name('admin.edit.profile');
 
-Route::post('/home/profile', 'UserController@postEventUser');
+Route::post('/home/profile', 'UserController@postEventUser')->name('users.profile');
+
+Route::get('/event/add', 'UserController@getEventUser')->name('user.event.add');
+Route::post('/event/add', 'UserController@postEventUser');
 
 Route::put('/home/profile', 'UserController@editUserClient');
 
@@ -77,9 +87,11 @@ Route::get('/event/category/{id}', 'EventEventController@getEventCategory')->nam
 Route::get('/event/delete/{id}', 'EventEventController@deleteEventUser')->name('client.event.delete');
 Route::get('/ticket/delete/{id}', 'EventEventController@DeleteTicket')->name('client.ticket.delete');
 
+// route edit of user & admin
 Route::get('/event/edit/{id}', 'EventEventController@editEventUser')->name('client.event.edit');
 Route::put('/event/edit/{id}', 'EventEventController@putEventUser')->name('client.event.put');
 
+// route quên mk
 Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
 Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
 Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');

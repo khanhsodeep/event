@@ -10,6 +10,7 @@
 @endpush
 
 @push('script')
+<script src="{{ asset('assets/js/instascan.min.js') }}"></script>
 <!-- SweetAlert2 -->
 <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 <!-- DataTables  & Plugins -->
@@ -89,101 +90,89 @@
         });
     });
 </script>
+<script type="text/javascript">
+    let scanner = new Instascan.Scanner({
+        video: document.getElementById('preview')
+    });
+    Instascan.Camera.getCameras().then(function(cameras) {
+        if (cameras.length > 0) {
+            scanner.start(cameras[0]);
+        } else {
+            console.error('No cameras found.');
+        }
+    }).catch(function(e) {
+        console.error(e);
+    });
+    scanner.addListener('scan', function(qrCodeMessage) {
+        index1 = qrCodeMessage.indexOf(':') + 1;
+        index2 = qrCodeMessage.indexOf('?')
+        code = qrCodeMessage.slice(-10)
+        email = qrCodeMessage.slice(index1, index2)
+        document.getElementById('result').innerHTML = '<span class="result">' + code + '<p>Email người tham dự:</p>' + email + '</span>';
+        document.getElementById('text').value = code;
+        document.forms[code].submit();
+        document.getElementById('submit').click();
+
+    })
+</script>
 @endpush
 @section('page-title')
-Quản lý Sự kiện
+Điểm danh
 @endsection
 
 @section('content')
-<!-- /.card -->
 @include('admin/components/notify')
+
+
+<!-- exm -->
+<h1 style="text-align:center">{{$ticket->name_event}}</h1>
+
+<div class="flex-container" style="text-align:center;">
+    <video id="preview" style="width:50%; height:auto;"></video>
+    <div id="result" style="text-align:center">Result Here</div>
+</div>
+
+<form action="" method="post" class="form-horizontal" style="text-align:center">
+    @csrf()
+    <label>MÃ VÉ</label>
+    <input type="text" name="text" id="text">
+    <button id="submit" type="submit" class="btn btn-primary">Điểm danh</button>
+</form>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <a href="/admin/event/add" class="btn btn-outline-success m-2">
-                        Thêm Sự kiện
-                    </a>
-                </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-striped table-bordered table-hover">
+                    <table id="example2" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="text-center">Tên</th>
-                                <!-- <th class="text-center">Nội dung</th> -->
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Danh mục</th>
-                                <th class="text-center">Hình ảnh</th>
-                                <th class="text-center">Số vé</th>
-                                <th class="text-center">Số người tham gia</th>
-                                <th class="text-center">Số vé còn lại</th>
-                                <th class="text-center">Thời gian</th>
-                                <th class="text-center">Địa điểm</th>
-                                <th class="text-center">Thao tác</th>
+
+                                <th class="text-center">Người tham dự</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Code</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($events as $event)
+                            @foreach ($attendance as $event)
                             <tr>
-                                <td class="text-bold">{{$event->name_event}}</td>
-                                <!-- <td>{{strip_tags($event->content)}}</td> -->
-                                <td>
-                                    @if($event->status == 0)
-                                    <a class="text-bold text-center text-danger">Đóng</a>
-                                        
-                                    @elseif($event->status == 1)
-                                    <a class="text-bold text-center text-success">Mở</a>
-                                  
-                                    @endif
-                                </td>
-                                <!-- <td>{{$event->category}}</td> -->
-                                <td>{{ !empty($event->category) ? $event->category->name:'' }}</td>
-                                <td><img src="{{ asset('file/' . $event->image) }}" style="height: 50px; width: 50px;"></td>
-                                <td class="text-bold text-center text-success">{{$event->amount}}</td>
-                                <td class="text-bold text-center text-primary">{{$event->member}}</td>
-                                <td class="text-bold text-center text-danger">{{$event->amount -$event->member}}</td> 
-                                <td>{{$event->time}}</td>
-                                <td>{{$event->address}}</td>
-                                @if($today < $event->time)
-                                <td class="project-actions text-center">
-                                    <a href="{{route('admin.event.edit', ['id' => $event->id])}}" class="btn btn-warning btn-sm mb-1">
-                                        <i class="fas fa-pencil-alt"> </i>
-                                        Sửa
-                                    </a>
-                                    <a href="{{route('admin.event.delete', ['id' => $event->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn xóa Sự kiện này')">
-                                        <i class="fas fa-trash"> </i>
-                                        Xóa
-                                    </a>
-                                </td>
-                                @else
-                                <td class="project-actions text-center">
-                                    <a class="btn btn-secondary btn-sm mb-1">
-                                 
-                                        Đã kết thúc
-                                    </a>
-                                    
-                                </td>
+
+
+                                @if($event->status == 1)
+
+                                <td>{{$event->fullname}}</td>
+                                <td>{{$event->email}}</td>
+                                <td>{{$event->code}}</td>
                                 @endif
+
                             </tr>
+
+                            
                             @endforeach
+                            <a href="{{route('admin.attendance.export-excel', ['id' => $ticket->event_id])}}" class="btn btn-outline-success m-2">
+                                Download Excel
+                            </a>
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th class="text-center">Tên</th>
-                                <!-- <th class="text-center">Nội dung</th> -->
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Danh mục</th>
-                                <th class="text-center">Hình ảnh</th>
-                                <th class="text-center">Số vé</th>
-                                <th class="text-center">Số người tham gia</th>
-                                <th class="text-center">Số vé còn lại</th>
-                                <th class="text-center">Thời gian</th>
-                                <th class="text-center">Địa điểm</th>
-                                <th class="text-center">Thao tác</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
                 <!-- /.card-body -->

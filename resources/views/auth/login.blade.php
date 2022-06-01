@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@section('page-title')
+    Đăng nhập
+@endsection
 <!-- login form -->
 <section id="buy-tickets" class="section-with-bg">
 </section>
@@ -43,20 +46,8 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <div class="col-md-6 offset-md-4 p-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                        <label class="form-check-label" for="remember">
-                                            {{ __('Nhớ mật khẩu') }}
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="form-group row mb-0">
-                                <div class="col-md-8 offset-md-4">
+                                <div class="col-md-8 offset-md-4 mt-2">
                                     <button type="submit" class="btn btn-primary">
                                         {{ __('Đăng nhập') }}
                                     </button>

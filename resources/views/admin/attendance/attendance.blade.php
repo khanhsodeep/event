@@ -91,7 +91,7 @@
 </script>
 @endpush
 @section('page-title')
-Quản lý Sự kiện
+Quản lý điểm danh
 @endsection
 
 @section('content')
@@ -102,19 +102,13 @@ Quản lý Sự kiện
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/event/add" class="btn btn-outline-success m-2">
-                        Thêm Sự kiện
-                    </a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-striped table-bordered table-hover">
+                    <table id="example2" class="table table-striped table-bordered responsive table-hover">
                         <thead>
                             <tr>
                                 <th class="text-center">Tên</th>
-                                <!-- <th class="text-center">Nội dung</th> -->
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Danh mục</th>
                                 <th class="text-center">Hình ảnh</th>
                                 <th class="text-center">Số vé</th>
                                 <th class="text-center">Số người tham gia</th>
@@ -122,59 +116,77 @@ Quản lý Sự kiện
                                 <th class="text-center">Thời gian</th>
                                 <th class="text-center">Địa điểm</th>
                                 <th class="text-center">Thao tác</th>
+                                <th class="text-center">Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($events as $event)
+                            @foreach ($eventList as $event)
                             <tr>
-                                <td class="text-bold">{{$event->name_event}}</td>
-                                <!-- <td>{{strip_tags($event->content)}}</td> -->
-                                <td>
-                                    @if($event->status == 0)
-                                    <a class="text-bold text-center text-danger">Đóng</a>
-                                        
-                                    @elseif($event->status == 1)
-                                    <a class="text-bold text-center text-success">Mở</a>
-                                  
-                                    @endif
-                                </td>
-                                <!-- <td>{{$event->category}}</td> -->
-                                <td>{{ !empty($event->category) ? $event->category->name:'' }}</td>
+
+                                @if($event->status == 1)
+                                <td>{{$event->name_event}}</td>
                                 <td><img src="{{ asset('file/' . $event->image) }}" style="height: 50px; width: 50px;"></td>
-                                <td class="text-bold text-center text-success">{{$event->amount}}</td>
-                                <td class="text-bold text-center text-primary">{{$event->member}}</td>
-                                <td class="text-bold text-center text-danger">{{$event->amount -$event->member}}</td> 
+                                <td>{{$event->amount}}</td>
+                                <td>{{$event->member}}</td>
+                                <td>{{$event->amount -$event->member}}</td>
                                 <td>{{$event->time}}</td>
                                 <td>{{$event->address}}</td>
-                                @if($today < $event->time)
+                                @if($today == date('Y-m-d', strtotime($event->time)) && $event->member >= 1)
                                 <td class="project-actions text-center">
-                                    <a href="{{route('admin.event.edit', ['id' => $event->id])}}" class="btn btn-warning btn-sm mb-1">
-                                        <i class="fas fa-pencil-alt"> </i>
-                                        Sửa
-                                    </a>
-                                    <a href="{{route('admin.event.delete', ['id' => $event->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn xóa Sự kiện này')">
-                                        <i class="fas fa-trash"> </i>
-                                        Xóa
+                                    <a href="{{route('admin.attendance', ['id' => $event->id])}}" class="btn btn-info btn-sm">
+                                        Điểm danh
                                     </a>
                                 </td>
-                                @else
-                                <td class="project-actions text-center">
-                                    <a class="btn btn-secondary btn-sm mb-1">
-                                 
-                                        Đã kết thúc
+                                @elseif ($event->member < 1) <td class="project-actions text-center">
+                                    <a class="btn btn-secondary btn-sm">
+                                        Không ai tham gia
                                     </a>
-                                    
-                                </td>
-                                @endif
+
+                                    </td>
+                                    @elseif ($today < $event->time)
+                                        <td class="project-actions text-center">
+                                            <a href="{{route('admin.attendance.export-excel', ['id' => $event->id])}}" class="btn btn-outline-success btn-sm">
+                                                DS điểm danh
+                                            </a>
+
+                                        </td>
+                                        @elseif ($today > $event->time)
+                                        <td class="project-actions text-center">
+                                            <a href="{{route('admin.attendance.export-excel', ['id' => $event->id])}}" class="btn btn-outline-success btn-sm">
+                                                DS điểm danh
+                                            </a>
+
+                                        </td>
+                                        @endif
+                                        @if($today == date('Y-m-d', strtotime($event->time)))
+                                        <td class="project-actions text-center">
+                                            <a class="btn btn-success btn-sm">
+                                                Đang diễn ra
+                                            </a>
+                                        </td>
+                                        @elseif ($today < $event->time)
+                                            <td class="project-actions text-center">
+                                                <a class="btn btn-warning btn-sm">
+                                                    Chưa bắt đầu
+                                                </a>
+
+                                            </td>
+                                            @elseif ($today > $event->time)
+                                            <td class="project-actions text-center">
+                                                <a class="btn btn-secondary btn-sm">
+                                                    Đã kết thúc
+                                                </a>
+
+                                            </td>
+                                            @endif
+                                            @endif
+
                             </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th class="text-center">Tên</th>
-                                <!-- <th class="text-center">Nội dung</th> -->
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Danh mục</th>
                                 <th class="text-center">Hình ảnh</th>
                                 <th class="text-center">Số vé</th>
                                 <th class="text-center">Số người tham gia</th>
@@ -182,9 +194,11 @@ Quản lý Sự kiện
                                 <th class="text-center">Thời gian</th>
                                 <th class="text-center">Địa điểm</th>
                                 <th class="text-center">Thao tác</th>
+                                <th class="text-center">Trạng thái</th>
                             </tr>
                         </tfoot>
                     </table>
+
                 </div>
                 <!-- /.card-body -->
             </div>

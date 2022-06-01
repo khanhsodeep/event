@@ -92,13 +92,13 @@ Sửa thông tin tài khoản người dùng
                 </div> -->
                 <div class="form-group col-6">
                     <label for="fullname">Họ tên</label>
-                    <input type="text" id="fullname" name="fullname" class="form-control" value="{!!$user->fullname!!}">
+                    <input type="text" id="fullname" name="fullname" class="form-control" value="{!!$user->fullname!!}" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-6">
                     <label for="email">Email</label>
-                    <input type="text" id="email" name="email" class="form-control" value="{!!$user->email!!}">
+                    <input type="text" id="email" name="email" class="form-control" value="{!!$user->email!!}" required>
                 </div>
                 <!-- <div class="form-group col-6">
                     <label for="address">Địa chỉ</label>

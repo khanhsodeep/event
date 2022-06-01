@@ -42,8 +42,8 @@ class HomeController extends Controller
         }
     public function index()
     {
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-        $event_hot = DB::table('event')->where('status', 1)->take(6)->orderBy('id', 'DESC')->get();
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d h-m-s');
+        $event_hot = DB::table('event')->where('status', 1)->take(6)->orderBy('time', 'DESC')->get();
         $event_favourite = DB::table('event')->orderBy('time','DESC')->where('status', 1)->where('event.time','>',$today)->Orwhere('event.time','<',$today)->take(3)->get();
        
         $data = [
@@ -61,12 +61,14 @@ class HomeController extends Controller
         //     return redirect()->back()->with('alert_error', 'Thông tin sự kiện không tồn tại.');
         // }
         $user = Auth::user();
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d h-m-s');
         $list_event_participation = DB::table('event')->join('ticket', 'event.id', '=', 'ticket.event_id')->where('ticket.user_id', Auth::user()->id)->get();
         $event = DB::table('event')->where('user_id', Auth::user()->id)->get();
         $categoryList = DB::table('categories')->get();
         $data = [
             'event' => $event,
             'user' => $user,
+            'today' => $today,
             'list_event_participation' => $list_event_participation,
             'categoryList' => $categoryList,
         ];

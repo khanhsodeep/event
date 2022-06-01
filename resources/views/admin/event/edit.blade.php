@@ -19,19 +19,7 @@
 
     @push('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-    <script>
-        $(document).ready(function() {
-                    $('.date').datetimepicker({
-                        format: 'MM/DD/YYYY',
-                        locale: 'vi'
-                    });
-    </script>
     <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.ckeditor').ckeditor();
-        });
-    </script>
     <!-- dropzonejs -->
     <script src="{{ asset('assets/plugins/dropzone/min/dropzone.min.js') }}"></script>
     <script>
@@ -97,7 +85,6 @@
     @endsection
 
     @section('content')
-    @include('admin/components/notify')
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">Sửa Sự kiện</h3>
@@ -114,11 +101,14 @@
                 <div class="row">
                     <div class="form-group col-6">
                         <label for="name">Tên sự kiện</label>
-                        <input type="text" id="name" name="name" class="form-control" value="{{$event->name_event}}">
+                        <input type="text" id="name" name="name" min="6" class="form-control" value="{{$event->name_event}}">
+                        @if($errors->first('name'))
+                        <div class="text-danger text-bold">{{($errors->first('name'))}}</div>
+                        @endif
                     </div>
                     <div class="form-group col-6">
                         <label for="cayegory_id">Danh mục</label>
-                        <select id="category_id" class="form-control custom-select" name="category_id">
+                        <select id="category_id" class="form-control custom-select" name="category_id" required>
                             <option selected="" disabled="">Danh mục</option>
                             @foreach ($listCategory as $category)
                             @if($category->id == $event->category_id)
@@ -128,6 +118,9 @@
                             @endif
                             @endforeach
                         </select>
+                        @if($errors->first('category_id'))
+                        <div class="text-danger text-bold">{{($errors->first('category_id'))}}</div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
@@ -141,7 +134,10 @@
                     </div>
                     <div class="form-group col-6">
                         <label for="phone">Số vé</label>
-                        <input type="number" id="amount" name="amount" class="form-control" value="{{$event->amount}}">
+                        <input min=1 type="number" id="amount" name="amount" class="form-control" value="{{$event->amount}}">
+                        @if($errors->first('amount'))
+                        <div class="text-danger text-bold">{{($errors->first('amount'))}}</div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
@@ -150,20 +146,32 @@
                         <textarea class="ckeditor form-control" name="content">{{$event->content}}</textarea> -->
                         <label for="phone">Hình ảnh (Bỏ trống nếu bạn không muốn đổi ảnh)</label>
                         <input class="form-control" type="file" id="formFile" name="image">
+                        @if($errors->first('image'))
+                        <div class="text-danger text-bold">{{($errors->first('image'))}}</div>
+                        @endif
                     </div>
                     <div class="form-group col-3">
                         <label for="phone">Thời gian</label>
-                        <input type="datetime" id="time" name="time" class="form-control date" value="{{$event->time}}" placeholder="Nhập thời gian như định dạng 2022-03-17 23:59:5 (năm-tháng-ngày giờ:phút:giây)">
+                        <input type="datetime-local" id="time" name="time" class="form-control date" value="{{ date('Y-m-d\TH:i', strtotime($event->time)) }}" required>
+                        @if($errors->first('time'))
+                        <div class="text-danger text-bold">{{($errors->first('time'))}}</div>
+                        @endif
                     </div>
                     <div class="form-group col-3">
                         <label for="address">Địa điểm</label>
-                        <input type="text" id="address" name="address" class="form-control" value="{{$event->address}}">
+                        <input type="text" id="address" name="address" class="form-control" min="6" value="{{$event->address}}" required>
+                        @if($errors->first('address'))
+                        <div class="text-danger text-bold">{{($errors->first('address'))}}</div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-6">
                         <label for="phone">Nội dung</label>
-                        <textarea class="ckeditor form-control" name="content">{{$event->content}}</textarea>
+                        <textarea class="ckeditor form-control" min="6" name="content" required>{{$event->content}}</textarea>
+                        @if($errors->first('content'))
+                        <div class="text-danger text-bold">{{($errors->first('content'))}}</div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
@@ -175,4 +183,5 @@
             </form>
         </div>
     </div>
-    @endsection
+</section>
+@endsection

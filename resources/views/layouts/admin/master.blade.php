@@ -37,7 +37,7 @@
     <div class="wrapper">
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ asset('/img/loading2.png') }}" alt=""  />
+            <img class="animation__shake" style="width:100%; height:auto;" src="{{ asset('/img/loading2.png') }}" alt=""  />
         </div>
 
         <!-- Navbar -->

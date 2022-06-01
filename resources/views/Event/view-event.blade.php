@@ -28,7 +28,7 @@
                     <div class="col-md-6">
                         <div class="details">
                             <h2>{{ $event->name_event }}</h2>
-                            @if ($event->time < $today) <span>Đã hết hạn</span> <br>
+                            @if ($event->time <= $today) <span>Đã hết hạn</span> <br>
                                 @elseif (Auth::check())
                                 <button style="margin-left:0px" class="buy-tickets buy-tickets-hover scrollto" href="{{route('user.event.detail', ['id' => $event->id])}}">Tham gia ngay</button>
                                 <i class="mt-2">Số vé còn lại: {{$event->amount}} </i> -

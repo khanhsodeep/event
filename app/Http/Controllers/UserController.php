@@ -17,15 +17,18 @@ class UserController extends Controller
 {
     protected $maxAttempts = 3; // Default is 5
     protected $decayMinutes = 2; // Default is 1
-    public function getList()
+    public function getList(Request $request)
     {
         $users = DB::table('users')->get();
         $data = [
             'users' => $users
         ];
-        return view('admin/user/list', $data);
+        if ($request->session()->has('auth')) {
+            return view('admin/user/list', $data);
+        } else {
+            return redirect()->route('admin.login');
+        }
     }
-
     public function getAdd()
     {
         $roleList = DB::table("roles")->get();
@@ -36,7 +39,7 @@ class UserController extends Controller
     public function postAdd(Request $request)
     {
         $validateRules = [
-            'fullname' => 'required', 'regex:/^[a-zA-Z ]+$/', 'max:255',
+            'fullname' => 'required', 'regex:/^([0-9\p{Latin}]+[\ -]?)+[a-zA-Z0-9]+$/u', 'max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role_id' => 'required',
@@ -47,16 +50,14 @@ class UserController extends Controller
             return redirect()->route("admin.user.add")->withErrors($validator)->withInput();
         }
         $data = [
-            // 'username' => $request->input('username'),
             'fullname' => $request->input('fullname'),
             'email' => $request->input('email'),
-            // 'address' => $request->input('address'),
-            // 'phone' => $request->input('phone'),
+
             'password' => Hash::make($request->password),
             'role_id' => $request->input('role_id'),
         ];
         DB::table('users')->insert($data);
-        return redirect()->route('admin.user.add')->with('alert_success', 'Tạo user thành công.');
+        return redirect()->route('admin.user')->with('alert_success', 'Tạo tài khoản thành công.');
     }
 
     public function getEdit($id)
@@ -70,13 +71,13 @@ class UserController extends Controller
     public function postEdit(Request $request, $id)
     {
         $validateRules = [
-            'fullname' => ['required', 'regex:/^[a-zA-Z ]+$/', 'max:255'],
+            'fullname' => ['required', 'regex:/^([0-9\p{Latin}]+[\ -]?)+[a-zA-Z0-9]+$/u', 'max:255'],
             'email' => 'required|email',
             'role_id' => 'required',
         ];
         $validator = Validator::make($request->all(), $validateRules);
         if ($validator->fails()) {
-            return redirect()->route("admin.user.edit", ['id' => $id])->withErrors($validator)->withInput();
+            return redirect()->route("admin.user.edit", ['id' => $id])->with('error', $validator)->withInput();
         }
         if ($request->has('password')) {
             $user = DB::table('users')->where('id', $id)->limit(1);
@@ -89,7 +90,7 @@ class UserController extends Controller
                 'role_id' => $request->input('role_id'),
                 'password' => Hash::make($request->password)
             ]);
-            return redirect()->route('admin.user.edit', ['id' => $id])->with('success', 'Cập nhật người dùng thành công.');
+            return redirect()->route('admin.user', ['id' => $id])->with('success', 'Cập nhật người dùng thành công.');
         } else {
             $user = DB::table('users')->where('id', $id)->limit(1);
             $user->update([
@@ -100,7 +101,7 @@ class UserController extends Controller
                 // 'phone' => $request->input('phone'),
                 'role_id' => $request->input('role_id'),
             ]);
-            return redirect()->route('admin.user.edit', ['id' => $id])->with('success', 'Cập nhật người dùng thành công.');
+            return redirect()->route('admin.user', ['id' => $id])->with('success', 'Cập nhật người dùng thành công.');
         }
     }
 
@@ -112,21 +113,25 @@ class UserController extends Controller
 
     public function getProfile(Request $request)
     {
-        $user = $request->session()->get('auth');
-        return view('/admin.profile', ['user' => $user]);
-    }
 
+        $user = $request->session()->get('auth');
+        if ($request->session()->has('auth')) {
+            return view('/admin.profile', ['user' => $user]);
+        } else {
+            return redirect()->route('admin.login');
+        }
+    }
     public function editProfile(Request $request)
     {
         $user = $request->session()->get('auth');
         $validateRules = [
-            'fullname' => ['required', 'regex:/^[a-zA-Z ]+$/', 'max:255'],
+            'fullname' => ['required', 'regex:/^([0-9\p{Latin}]+[\ -]?)+[a-zA-Z0-9]+$/u', 'max:255'],
             'password' => 'min:6',
             'password_confirmation' => 'required_with:password|same:password|min:6',
         ];
         $validator = Validator::make($request->all(), $validateRules);
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->with('error', $validator)->withInput();
         }
         $fullname = $request->fullname;
         $password = Hash::make($request->password);
@@ -166,9 +171,15 @@ class UserController extends Controller
         ];
 
         DB::table('event')->insert($data);
-        return redirect()->back()->with('success', 'Tạo sự kiện thành công.');
+        return redirect()->route('users.profile')->with('success', 'Tạo sự kiện thành công.');
     }
-
+    public function getEventUser()
+    {
+        $user = Auth::user();
+        $categoryList = DB::table("categories")->get();
+        $data = ['categoryList' => $categoryList, 'user' =>$user];
+        return view("/event/add", $data);
+    }
     public function editUserClient(Request $request)
     {
         $validateRules = [

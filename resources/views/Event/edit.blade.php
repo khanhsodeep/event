@@ -4,6 +4,12 @@
 <link href="/css/profile2.css" rel="stylesheet" type="text/css" />
 <script src="/js/profile.js"></script>
 <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.ckeditor').ckeditor();
+    });
+</script>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <section id="buy-tickets" class="section-with-bg">
 
@@ -12,7 +18,7 @@
             <div class="col-md-12">
                 <div id="content" class="content content-full-width">
                     <!-- begin profile -->
-                    <div class="profile">
+                    <div class="profile mt-5">
                         <div class="profile-header">
                             <!-- BEGIN profile-header-cover -->
                             <div class="profile-header-cover"></div>
@@ -52,7 +58,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Thông tin user</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Thông tin người dùng</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="" enctype="multipart/form-data" method="POST">
@@ -78,7 +84,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Thông tin user</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Thông tin người dùng</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="" enctype="multipart/form-data" method="POST">
@@ -107,20 +113,13 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" id="pills-company-tab" data-toggle="pill" href="#pills-company" role="tab" aria-controls="pills-company" aria-selected="true">SỬA SỰ KIỆN</a>
                     </li>
-                    <!-- <li class="nav-item" role="presentation">
-                  <a class="nav-link" id="pills-product-tab" data-toggle="pill" href="#pills-product" role="tab" aria-controls="pills-product" aria-selected="false">VÉ MỜI SỰ KIỆN</a>
-               </li>
-               <li class="nav-item" role="presentation">
-                  <a class="nav-link" id="pills-news-tab" data-toggle="pill" href="#pills-news" role="tab" aria-controls="pills-news" aria-selected="false">TẠO SỰ KIỆN MỚI</a>
-               </li> -->
                 </ul>
             </div>
-            <div class="tab-content" id="pills-tabContent">
+            <div class="" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-company" role="tabpanel" aria-labelledby="pills-company-tab">
-                    @include('admin/components/notify')
                     <div class="profile-content">
-                        <!-- begin tab-content -->
-                        <div class="tab-content p-0">
+                        <!-- begin  -->
+                        <div class=" p-0">
                             <!-- begin #profile-post tab -->
                             <div class="tab-pane fade active show" id="profile-post">
                                 <!-- begin timeline -->
@@ -132,25 +131,33 @@
                                             <div class="form-group col-6">
                                                 <label for="name">Tên sự kiện</label>
                                                 <input type="text" id="name" name="name" class="form-control" required placeholder="Nhập tên sự kiện" value="{{$user_event->name_event}}">
+                                                @if($errors->first('name'))
+                                                <div class="text-danger text-bold" style="font-weight: bold;" style="font-weight: bold;">{{($errors->first('name'))}}</div>
+                                                @endif
                                             </div>
                                             <div class="form-group col-6">
                                                 <option selected="" disabled="">Danh mục</option>
                                                 <select id="category_id" class="form-control custom-select" name="category_id">
-                                                @foreach ($listCategory as $category)
-                                                @if($category->id == $user_event->category_id)
-                                                <option value="{{$category->id}}" selected>{{$category->name}}</option>
-                                                @else
-                                                <option value="{{$category->id}}">{{$category->name}}</option>
-                                                @endif
-                                                @endforeach
+                                                    @foreach ($listCategory as $category)
+                                                    @if($category->id == $user_event->category_id)
+                                                    <option value="{{$category->id}}" selected>{{$category->name}}</option>
+                                                    @else
+                                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                                    @endif
+                                                    @endforeach
                                                 </select>
-
+                                                @if($errors->first('category_id'))
+                                                <div class="text-danger text-bold" style="font-weight: bold;">{{($errors->first('category_id'))}}</div>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-6">
                                                 <label for="phone">Số vé</label>
-                                                <input type="number" id="amount" name="amount" class="form-control" required placeholder="Nhập số lượng vé" value="{{$user_event->amount}}">
+                                                <input type="number" min="1" id="amount" name="amount" class="form-control" required placeholder="Nhập số lượng vé" value="{{$user_event->amount}}">
+                                                @if($errors->first('amount'))
+                                                <div class="text-danger text-bold" style="font-weight: bold;">{{($errors->first('amount'))}}</div>
+                                                @endif
                                             </div>
                                             <div class="form-group col-6">
                                                 <label for="phone">Hình ảnh (Để trống nếu bạn không muốn thay đổi ảnh)</label>
@@ -160,17 +167,26 @@
                                         <div class="row">
                                             <div class="form-group col-6">
                                                 <label for="phone">Thời gian</label>
-                                                <input type="text" id="time" name="time" class="form-control" placeholder="Năm-Tháng-Ngày Giờ:Phút:Giây" required value="{{$user_event->time}}">
+                                                <input type="datetime-local" id="time" name="time" class="form-control" required value="{{ date('Y-m-d\TH:i', strtotime($user_event->time)) }}">
+                                                @if($errors->first('time'))
+                                                <div class="text-danger text-bold" style="font-weight: bold;">{{($errors->first('time'))}}</div>
+                                                @endif
                                             </div>
                                             <div class="form-group col-6">
                                                 <label for="address">Địa điểm</label>
                                                 <input type="text" id="address" name="address" class="form-control" required placeholder="Nhập địa điểm diễn ra sự kiện" value="{{$user_event->address}}">
+                                                @if($errors->first('address'))
+                                                <div class="text-danger text-bold" style="font-weight: bold;">{{($errors->first('address'))}}</div>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-6">
                                                 <label for="phone">Nội dung</label>
                                                 <textarea class="ckeditor form-control" name="content" required>{{$user_event->content}}</textarea>
+                                                @if($errors->first('content'))
+                                                <div class="text-danger text-bold" style="font-weight: bold;">{{($errors->first('content'))}}</div>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="row mt-1">
@@ -185,7 +201,7 @@
                             </div>
                             <!-- end #profile-post tab -->
                         </div>
-                        <!-- end tab-content -->
+                        <!-- end  -->
                     </div>
                 </div>
                 <div class="tab-pane fade" id="pills-product" role="tabpanel" aria-labelledby="pills-product-tab">
@@ -216,7 +232,8 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="pills-news" role="tabpanel" aria-labelledby="pills-news-tab">
+                <!-- <div class="tab-pane fade" id="pills-news" role="tabpanel" aria-labelledby="pills-news-tab">
+                    
                     <div class="container-fluid">
                         <form method="post" action="" enctype="multipart/form-data">
                             @csrf
@@ -240,15 +257,10 @@
                             <button class="btn btn-danger">Tạo</button>
                         </form>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
-    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.ckeditor').ckeditor();
-        });
-    </script>
+
 </section>
 @endsection
