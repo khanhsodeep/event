@@ -1,17 +1,17 @@
 **WEBSITE TỔ CHỨC SỰ KIỆN TRƯỜNG ĐH VĂN LANG**
-Live demo at: https://eventboxvlu.site/
-Admin page: https://eventboxvlu.site/admin/login
-Account for demo (2 roles admin and user)
-Username: admin@gmail.com
-Password: admin123
+- Live demo at: https://eventboxvlu.site/
+- Admin page: https://eventboxvlu.site/admin/login
+- Account for demo (2 roles admin and user)
+- Username: admin@gmail.com
+- Password: admin123
 
 # Giới thiệu:
 ## Mục đích:
 
-Tài liệu này nhằm mô tả hướng dẫn sử dụng trang web Sự kiện Văn Lang. Trang web này được thiết kế để quản lý và tham gia các sự kiện dành cho cán bộ nhân viên và sinh viên của Trường Đại học Văn Lang. Các chức năng chính của trang web Sự kiện Văn Lang bao gồm:
+## Tài liệu này nhằm mô tả hướng dẫn sử dụng trang web Sự kiện Văn Lang. Trang web này được thiết kế để quản lý và tham gia các sự kiện dành cho cán bộ nhân viên và sinh viên của Trường Đại học Văn Lang. Các chức năng chính của trang web Sự kiện Văn Lang bao gồm:
 
-Với vai trò Admin: thống kê và quản lý các sự kiện, quản lý người dùng, điểm danh sinh viên tham gia sự kiện.
-Với vai trò Người dùng: đăng nhập/đăng ký, quản lý sự kiện cá nhân, tham gia sự kiện.
+- Với vai trò Admin: thống kê và quản lý các sự kiện, quản lý người dùng, điểm danh sinh viên tham gia sự kiện.
+- Với vai trò Người dùng: đăng nhập/đăng ký, quản lý sự kiện cá nhân, tham gia sự kiện.
 
 ## Các thành viên:
 Danh sách các thành viên bao gồm:
